@@ -1,6 +1,7 @@
 #include <muduo/base/Types.h>
 #include <vector>
 #include <boost/noncopyable.hpp>
+#include <stdlib.h> // ssize_t
 
 typedef struct gdImageStruct* gdImagePtr;
 
@@ -9,15 +10,17 @@ class Plot : boost::noncopyable
  public:
   Plot(int width, int height, int totalSeconds, int samplingPeriod);
   ~Plot();
-  muduo::string plotCpu(const std::vector<double> data);
+  muduo::string plotCpu(const std::vector<double>& data);
 
  private:
   muduo::string toPng();
   // pair<shared_ptr<void*>, int> toPng();
-  int getX(long x, long total) const;
+  int getX(ssize_t x, ssize_t total) const;
   int getY(double value) const;
   void label(double maxValue);
 
+  // gdFont is a typedef of unnamed struct, cannot be forward declared
+  // wordaround suggested in http://stackoverflow.com/questions/7256436/forward-declarations-of-unnamed-struct
   struct MyGdFont;
   typedef struct MyGdFont* MyGdFontPtr;
 
@@ -26,10 +29,10 @@ class Plot : boost::noncopyable
   const int totalSeconds_;
   const int samplingPeriod_;
   const gdImagePtr image_;
-  const MyGdFontPtr font_;  // no way to forward declaration gdFontPtr
+  const MyGdFontPtr font_;
   const int fontWidth_;
   const int fontHeight_;
-  const int white_;
+  const int background_;
   const int black_;
   const int gray_;
   const int blue_;

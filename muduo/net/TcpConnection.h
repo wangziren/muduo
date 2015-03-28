@@ -58,6 +58,7 @@ class TcpConnection : boost::noncopyable,
   const InetAddress& localAddress() const { return localAddr_; }
   const InetAddress& peerAddress() const { return peerAddr_; }
   bool connected() const { return state_ == kConnected; }
+  bool disconnected() const { return state_ == kDisconnected; }
   // return true if success.
   bool getTcpInfo(struct tcp_info*) const;
   string getTcpInfoString() const;
@@ -123,6 +124,7 @@ class TcpConnection : boost::noncopyable,
   // void shutdownAndForceCloseInLoop(double seconds);
   void forceCloseInLoop();
   void setState(StateE s) { state_ = s; }
+  const char* stateToString() const;
 
   EventLoop* loop_;
   const string name_;
